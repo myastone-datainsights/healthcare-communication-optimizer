@@ -1,4 +1,4 @@
-﻿# Development Log
+# Development Log
 
 ## Week 1: January 14-21, 2026
 

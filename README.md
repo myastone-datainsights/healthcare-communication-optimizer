@@ -1,6 +1,6 @@
-﻿# Healthcare Communication Optimizer
+# Healthcare Communication Optimizer
 
-🏥 Transform complex clinical discharge instructions into patient-friendly language using MedGemma AI
+?? Transform complex clinical discharge instructions into patient-friendly language using MedGemma AI
 
 Built for the [MedGemma Impact Challenge](https://www.kaggle.com/competitions/med-gemma-impact-challenge)
 
@@ -15,8 +15,8 @@ Most patients don't know: PO = by mouth, q6h = every 6 hours, PRN = as needed, h
 ## The Solution
 
 MedGemma-powered automatic transformation into audience-appropriate versions:
-- Patient-level (6-8th grade): Clear, supportive language
-- Caregiver-level (9-12th grade): Practical guidance
+- Patient-level (4-5th grade): Clear, supportive language
+- Caregiver-level (6-8th grade): Practical guidance
 - Community-level: General public education
 
 ## Technology Stack
