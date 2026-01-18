@@ -434,3 +434,37 @@ Don't twist your hip inward.
 - Consistency across all discharge types critical
 
 ### Next: Universal Prompt Framework (Test Run 5)
+
+## Test Run 5: Universal Prompt - FAILED
+**Date:** January 17, 2026  
+**Time:** ~4:00 PM  
+**Configuration:**
+- `max_new_tokens`: 1000
+- `dtype`: bfloat16
+- `device`: CPU
+
+### Goal
+Validate ONE universal prompt works consistently across different discharge scenarios.
+
+### Universal Prompt Strategy
+**Approach:**
+- Single prompt for all discharge types
+- Adaptive sections (use only relevant ones)
+- Medication naming rules for prescription vs OTC
+- 6 standard sections with clear purposes
+- Target 4.5-5.5 grade reading level
+
+### Critical Failure: Content Hallucination
+
+**Acetaminophen Test:**
+- Input: Only acetaminophen mentioned
+- Output: **Invented 4 medications** (rivaroxaban, oxycodone, acetaminophen, amoxicillin)
+- Grade: 6.6 ✗ (above target)
+
+**Hip Surgery Test:**
+- Grade: 7.7 ✗ (above target)
+- Also added details not in original input
+
+### Root Cause Analysis
+
+**The prompt included medication examples:**
