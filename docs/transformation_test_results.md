@@ -1,24 +1,24 @@
 # Transformation System Test Results
 
 ## Overview
-Testing prompt optimization across 5 discharge scenarios to achieve 4.5-5.5 grade reading level while preserving medical accuracy and patient dignity.
+Testing prompt optimization across 5 discharge scenarios to achieve a 4.5–5.5 grade reading level while preserving medical accuracy and patient dignity.
 
-**Testing Period:** January 20, 2026  
+**Testing Period:** January 20–21, 2026  
 **Platform:** Kaggle GPU T4 x2  
-**Baseline Average:** 9.5 grade level (range: 8.6-10.2)  
-**Target:** 4.5-5.5 grade level  
+**Baseline Average:** 9.5 grade level (range: 8.6–10.2)  
+**Target:** 4.5–5.5 grade level  
 
 ---
 
-## Test A-v1: Direct Transformation (Architecture A)
+# Test A‑v1: Direct Transformation (Architecture A)
 **Date:** January 20, 2026  
 **Strategy:** Transform clinical input directly to patient-level output  
 **Script:** `src/test_a_reading_level_optimization.py`
 
 ### Results Summary
-- **Average Grade Level:** 3.9 (target: 4.5-5.5)
-- **Success Rate:** 2/5 scenarios in target range
-- **Average Reduction:** 5.6 grades from baseline
+- **Average Grade Level:** 3.9  
+- **Success Rate:** 2/5  
+- **Average Reduction:** 5.6 grades  
 
 ### Detailed Results
 | Scenario | Baseline | Transformed | Reduction | Status |
@@ -29,132 +29,166 @@ Testing prompt optimization across 5 discharge scenarios to achieve 4.5-5.5 grad
 | Heart Failure | 9.7 | 3.8 | 5.9 | Over-simplified |
 | Wound Care | 8.6 | 3.3 | 5.3 | Over-simplified |
 
-### Critical Issues
-
-**Hallucination Risk - Diabetes Scenario:**
-```
-You have sudden severe headache.
-You have sudden severe headache.
-[repeated 80+ times until token limit]
-```
-- Model entered infinite repetition loop
-- Clinically dangerous - unusable output
-- Root cause: Open-ended instruction to "list 3-5 emergency signs"
-
-**Over-Simplification - 3 of 5 Scenarios:**
-- Acetaminophen (2.9), Heart Failure (3.8), Wound Care (3.3)
-- Language too elementary: "Rest your body", "You feel very sick"
-- Lacks dignity and actionable specificity
-- Root cause: "5-10 word sentences" constraint too restrictive
-
-**Success Case - Hip Surgery (4.9 grade):**
-- Achieved target range
-- Maintained clinical accuracy
-- Preserved patient dignity
-- Proof of concept: 4.5-5.5 grade IS achievable
-
 ### Key Learnings
-- ✅ Dramatic reading level reduction possible (avg 5.6 grade drop)
-- ✅ Target range (4.5-5.5) is achievable (hip surgery proof)
-- ❌ Direct transformation causes hallucinations on complex scenarios
-- ❌ Overly restrictive sentence length sacrifices dignity
+- Dramatic reading-level reduction is possible  
+- Target range is achievable  
+- Direct transformation is unstable  
+- Sentence-length constraints caused dignity loss  
+- Open-ended lists triggered hallucination loops  
 
 ---
 
-## Test A-v2: Baseline Simplification (Architecture B)
+# Test A‑v2: Baseline Simplification (Architecture B)
 **Date:** January 20, 2026  
-**Strategy:** Two-step process - generate baseline, then simplify  
+**Strategy:** Two-step process — generate baseline, then simplify  
 **Script:** `src/test_a_v2_reading_level_optimization.py`
 
 ### Results Summary
-- **Average Grade Level:** 4.4 (target: 4.5-5.5)
-- **Success Rate:** 0/5 scenarios in exact target range (but close)
-- **Average Reduction:** 5.1 grades from baseline
+- **Average Grade Level:** 4.4  
+- **Success Rate:** 0/5 (3 close)  
+- **Average Reduction:** 5.1 grades  
 
 ### Detailed Results
 | Scenario | Baseline | Simplified | Reduction | Status |
 |----------|----------|------------|-----------|--------|
 | Acetaminophen | 9.5 | 6.5 | 3.0 | Too high (thinking leak) |
 | Hip Surgery | 9.6 | 3.8 | 5.8 | Too low |
-| Diabetes | 10.2 | 4.0 | 6.2 | Close (-0.5) |
-| Heart Failure | 9.7 | 4.2 | 5.5 | Close (-0.3) |
+| Diabetes | 10.2 | 4.0 | 6.2 | Close |
+| Heart Failure | 9.7 | 4.2 | 5.5 | Close |
 | Wound Care | 8.6 | 3.5 | 5.1 | Too low |
 
-### Critical Issues
+### Key Learnings
+- No hallucinations  
+- Reasoning leaks surfaced  
+- Inconsistent simplification  
+- Average near target, but unstable  
 
-**Thinking Process Exposure - Acetaminophen:**
-```
-<unused94>thought
-The user wants me to simplify...
-Here's the plan:
-1. Identify the core information...
-```
-- Model exposed internal reasoning instead of just providing output
-- Bloated response and raised reading level to 6.5
-- Not clinically usable
+---
 
-**Inconsistent Results:**
-- 1 scenario too high (6.5)
-- 4 scenarios too low (3.5-4.2)
-- 3 scenarios within 0.5 grades of target (close but not exact)
+# Test A‑v3: Stabilized Reading-Level Prompt (Architecture A Refinement)
+**Date:** January 21, 2026  
+**Strategy:** Add structure, expand sentence length, restrict emergency lists  
+**Script:** `src/test_a_v3_reading_level_optimization.py`
+
+### Results Summary
+- **Average Grade Level:** 4.5  
+- **Success Rate:** 1/5  
+- **Average Reduction:** 5.0 grades  
+
+### Detailed Results
+| Scenario | Baseline | Transformed | Reduction | Status |
+|----------|----------|-------------|-----------|--------|
+| Acetaminophen | 9.5 | 6.5 | 3.0 | Too high (thinking leak) |
+| Hip Surgery | 9.6 | 5.0 | 4.6 | ✓ TARGET MET |
+| Diabetes | 10.2 | 3.6 | 6.6 | Too low |
+| Heart Failure | 9.7 | 3.5 | 6.2 | Too low |
+| Wound Care | 8.6 | 3.9 | 4.7 | Too low |
 
 ### Key Learnings
-- ✅ No hallucinations (Architecture B solved repetition loop problem)
-- ✅ Average (4.4) very close to target range
-- ✅ 3 of 5 within 0.5 grades of target
-- ❌ Model exposed reasoning process (not production-ready)
-- ❌ Still inconsistent across scenarios
+- Structure stabilized  
+- Hallucinations eliminated  
+- Thinking leak reappeared  
+- Over-compression persisted in complex scenarios  
 
 ---
 
-## Comparative Analysis
+# Test A‑v4: Content Floor + No Reasoning + Adult Tone
+**Date:** January 21, 2026  
+**Strategy:** Add content floor, ban reasoning, enforce adult tone  
+**Script:** `src/test_a_v4_reading_level_optimization.py`
 
-### Architecture Comparison
-| Approach | Avg Grade | Hallucinations | In-Range Count | Consistency |
-|----------|-----------|----------------|----------------|-------------|
-| **A-v1 (Direct)** | 3.9 | Yes (1/5) | 2/5 | Low |
-| **A-v2 (Simplify)** | 4.4 | No | 0/5 (3 close) | Medium |
-| **Target** | 4.5-5.5 | None | 5/5 | High |
+### Results Summary
+- **Average Grade Level:** 4.9  
+- **Success Rate:** 2/5  
+- **Average Reduction:** 4.6 grades  
 
-### What Both Tests Proved
-1. **Reading level CAN be dramatically reduced** (5+ grade reduction consistently achieved)
-2. **Target range (4.5-5.5) is technically achievable** (hip surgery v1: 4.9, heart failure v2: 4.2, diabetes v2: 4.0)
-3. **MedGemma is sensitive to prompt structure** (small changes cause large output variations)
-4. **Hallucination risk is real** (requires careful prompt engineering)
+### Detailed Results
+| Scenario | Baseline | Transformed | Reduction | Status |
+|----------|----------|-------------|-----------|--------|
+| Acetaminophen | 9.5 | 5.1 | 4.4 | ✓ TARGET MET |
+| Hip Surgery | 9.6 | 4.6 | 5.0 | ✓ TARGET MET |
+| Diabetes | 10.2 | 3.9 | 6.3 | Too low |
+| Heart Failure | 9.7 | 2.9 | 6.8 | Too low |
+| Wound Care | 8.6 | 7.9 | 0.7 | Too high |
 
-### Remaining Challenges
-1. **Consistency:** Cannot reliably hit 4.5-5.5 across all scenarios
-2. **Dignity preservation:** Simple scenarios become condescending when over-simplified
-3. **Production readiness:** Thinking leaks and hallucinations prevent clinical deployment
-
----
-
-## Strategic Implications for Competition
-
-### What We Can Demonstrate
-✅ **Problem validated:** MedGemma baseline averages 9.5 grade (inaccessible to 54% of Americans)  
-✅ **Transformation possible:** Achieved 4-6 grade reductions across all scenarios  
-✅ **Target achievable:** Multiple scenarios hit or came within 0.5 grades of 4.5-5.5 range  
-✅ **Systematic methodology:** Two architectures tested, issues documented, learnings captured  
-
-### What Requires Further Work
-⚠️ **Consistency:** Need reliable 4.5-5.5 output across diverse discharge types  
-⚠️ **Hallucination prevention:** Requires additional safeguards for complex scenarios  
-⚠️ **Dignity preservation:** Balance accessibility with respectful adult language  
-
-### Competitive Positioning
-**Our value proposition remains valid:**
-- MedGemma produces clinically sound but inaccessible content (9.5 grade avg)
-- Transformation to 4.5-5.5 grade addresses health literacy crisis (54% of Americans)
-- Technical feasibility demonstrated (multiple scenarios achieved or approached target)
-- Remaining challenges are engineering refinements, not fundamental barriers
+### Key Learnings
+- First version with **multiple stable successes**  
+- Heart Failure remained hardest scenario  
+- Wound Care drifted upward due to vocabulary inflation  
+- Compression still too aggressive in complex cases  
 
 ---
 
-## Next Steps
-Continue prompt refinement to achieve:
-1. Consistent 4.5-5.5 grade level (5/5 scenarios)
-2. Zero hallucinations (clinical safety requirement)
-3. Dignity-preserving language (adult-appropriate accessibility)
+# Test A‑v5: Vocabulary Ceiling + No New Warnings
+**Date:** January 21, 2026  
+**Strategy:** Reduce complexity inflation, restrict added warnings  
+**Script:** `src/test_a_v5_reading_level_optimization.py`
 
-**Approach:** Iterative testing with Copilot support, escalating to Claude for strategic decisions.
+### Results Summary
+- **Average Grade Level:** 4.5  
+- **Success Rate:** 1/5  
+- **Average Reduction:** 5.0 grades  
+
+### Detailed Results
+| Scenario | Baseline | Transformed | Reduction | Status |
+|----------|----------|-------------|-----------|--------|
+| Acetaminophen | 9.5 | 6.5 | 3.0 | Too high |
+| Hip Surgery | 9.6 | 4.4 | 5.2 | Too low |
+| Diabetes | 10.2 | 3.3 | 6.9 | Too low |
+| Heart Failure | 9.7 | 3.4 | 6.3 | Too low |
+| Wound Care | 8.6 | 4.9 | 3.7 | ✓ TARGET MET |
+
+### Key Learnings
+- Wound Care stabilized  
+- Acetaminophen remained too high  
+- Heart Failure remained too low  
+- Compression vs. inflation now scenario-specific  
+
+---
+
+# Test A‑v6: Sentence Length Expansion + Strict Content Retention
+**Date:** January 21, 2026  
+**Strategy:** Increase sentence length, enforce retention, ban repeated warnings  
+**Script:** `src/test_a_v6_reading_level_optimization.py`
+
+### Results Summary
+- **Average Grade Level:** 4.9  
+- **Success Rate:** 2/5  
+- **Average Reduction:** 4.6 grades  
+
+### Detailed Results
+| Scenario | Baseline | Transformed | Reduction | Status |
+|----------|----------|-------------|-----------|--------|
+| Acetaminophen | 9.5 | 7.4 | 2.1 | Too high |
+| Hip Surgery | 9.6 | 5.5 | 4.1 | Borderline high |
+| Diabetes | 10.2 | 4.5 | 5.7 | ✓ TARGET MET |
+| Heart Failure | 9.7 | 2.6 | 7.1 | Too low |
+| Wound Care | 8.6 | 4.7 | 3.9 | ✓ TARGET MET |
+
+### Key Learnings
+- Reading-level stabilization achieved in multiple scenarios  
+- No hallucinations across all tests  
+- Heart Failure remains the most compression-prone scenario  
+- Acetaminophen prone to vocabulary inflation  
+- System now stable enough to proceed to **Test B (Dignity Optimization)**  
+
+---
+
+# Summary of Architecture A Progression
+
+| Version | Avg Grade | In-Range | Hallucinations | Notes |
+|---------|-----------|----------|----------------|-------|
+| A‑v1 | 3.9 | 2/5 | Yes | Over-simplified, unstable |
+| A‑v2 | 4.4 | 0/5 (3 close) | No | Reasoning leaks |
+| A‑v3 | 4.5 | 1/5 | No | Structure stabilized |
+| A‑v4 | 4.9 | 2/5 | No | First multi-scenario success |
+| A‑v5 | 4.5 | 1/5 | No | Scenario-specific drift |
+| A‑v6 | 4.9 | 2/5 | No | Stable enough for next phase |
+
+---
+
+# Next Steps
+1. Begin **Test B: Dignity Optimization**  
+2. Integrate dignity-preserving language without raising reading level  
+3. Develop **Hybrid Prompt (Test C)** to balance readability + dignity  
+4. Prepare final competition documentation and visualizations  
