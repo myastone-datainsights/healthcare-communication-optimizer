@@ -468,3 +468,13 @@ Validate ONE universal prompt works consistently across different discharge scen
 ### Root Cause Analysis
 
 **The prompt included medication examples:**
+
+## Baseline Test: Zero-Shot Capability Assessment
+**Date:** January 19, 2026
+**Environment:** Kaggle GPU T4 x2
+
+**Test:** Asked MedGemma to generate discharge instructions without transformation structure
+**Result:** No output generated
+**Insight:** MedGemma requires structured transformation prompts. It cannot generate 
+patient-facing content from bare generation requests. This validates the necessity 
+of the universal prompt framework developed in Test Runs 1-5.
