@@ -192,3 +192,15 @@ Testing prompt optimization across 5 discharge scenarios to achieve a 4.5–5.5 
 2. Integrate dignity-preserving language without raising reading level  
 3. Develop **Hybrid Prompt (Test C)** to balance readability + dignity  
 4. Prepare final competition documentation and visualizations  
+
+---
+
+## System-Level Analysis
+
+After completing Tests A-v1 through A-v6, we conducted a comprehensive architectural analysis. 
+
+**Key Finding:** The remaining inconsistencies are not prompt-level issues but architectural limitations of single-stage transformation.
+
+**Full analysis and path forward:** See [`docs/system_architecture_analysis.md`](system_architecture_analysis.md)
+
+**Next Phase:** Transition from Architecture A (single-stage) to Architecture B (two-stage adaptive pipeline) to address scenario-specific density variations.
