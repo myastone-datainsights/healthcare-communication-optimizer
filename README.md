@@ -42,3 +42,11 @@ Healthcare Focus | Career Transition: Banking Operations to BI & Data Analytics
 MIT License
 
 Created: January 14, 2026
+
+## Project Documentation
+
+- [Baseline Test Results](docs/baseline_test_results.md) - MedGemma's natural output (9.5 grade avg)
+- [Transformation Test Results](docs/transformation_test_results.md) - Tests A-v1 through A-v6
+- [System Architecture Analysis](docs/system_architecture_analysis.md) - Strategic path forward (Architecture B)
+
+Created: January 21, 2026
