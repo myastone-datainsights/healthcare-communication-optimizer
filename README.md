@@ -236,8 +236,9 @@ Understanding clinical language model behavior enables:
 **Google Research MedGemma Impact Challenge**
 - ****Kaggle:** https://kaggle.com/competitions/med-gemma-impact-challenge/writeups/healthcare-communication-optimizer-transforming-c 
 - **Demo Video:** https://youtu.be/1G4d1Gx7qPE - 3-minute demonstration
+- **Demo Notebook:** https://www.kaggle.com/code/myastone/medgemma-baseline-test-discharge-instructions
 - **Track:** Main Track + Novel Task Prize
-
+ 
 ---
 
 ## 👤 Author
